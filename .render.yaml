@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: pricacom_teac_backend
+    rootDir: backend
+    env: node
+    buildCommand: yarn install && yarn build
+    startCommand: yarn start
