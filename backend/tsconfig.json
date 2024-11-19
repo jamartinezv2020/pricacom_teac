@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Usa la última versión de ECMAScript.
+    "module": "ESNext", // Habilita módulos ESM.
+    "moduleResolution": "node", // Resuelve módulos como Node.js.
+    "esModuleInterop": true, // Habilita interoperabilidad con CommonJS.
+    "skipLibCheck": true, // Ignora la comprobación de bibliotecas.
+    "strict": true, // Habilita todas las verificaciones estrictas.
+    "resolveJsonModule": true, // Permite importar archivos JSON.
+    "outDir": "./dist", // Carpeta de salida de los archivos JS.
+    "forceConsistentCasingInFileNames": true, // Asegura que los nombres de archivo sean consistentes.
+    "target": "ESNext", // Usa la última versión de ECMAScript.
+    "module": "ESNext", // Módulos ES.
+    "allowJs": true // Permite archivos JS además de TS
+  },
+  "include": [
+    "src/**/*.ts" // Asegúrate de que todos los archivos TS estén incluidos.
+  ]
+}

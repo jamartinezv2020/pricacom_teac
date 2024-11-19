@@ -1,0 +1,114 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id                      Int                     @id @default(autoincrement())
+  nombre_usuario          String                  @unique
+  email                   String                  @unique
+  contrasena              String
+  confirmado              Boolean                 @default(false)
+  activo                  Boolean                 @default(false)
+  token_confirmacion      String?
+  fecha_expiracion_token  DateTime?
+  codigo_2fa              String?
+  fecha_expiracion_2fa    DateTime?
+  creado_en               DateTime                @default(now())
+  actualizado_en          DateTime                @updatedAt
+  rol_id                  Int?
+  rol                     Rol?                    @relation(fields: [rol_id], references: [id])
+  respuestas_estudiante   RespuestaEstudiante[]
+  resultados_cuestionario ResultadoCuestionario[]
+  autenticacion_2fa       Autenticacion2FA[]
+  Estudiante              Estudiante?
+}
+
+model Estudiante {
+  id                    Int                     @id @default(autoincrement())
+  usuario_id            Int                     @unique
+  usuario               Usuario                 @relation(fields: [usuario_id], references: [id])
+  nombre_completo       String
+  fecha_nacimiento      DateTime
+  grupo_etnico          String?
+  habilidades           Json?                   // Habilidades almacenadas como JSON para flexibilidad
+  avatar                Bytes?
+  creado_en             DateTime                @default(now())
+  actualizado_en        DateTime                @updatedAt
+  respuestas            RespuestaEstudiante[]
+  ResultadoCuestionario ResultadoCuestionario[]
+}
+
+model Rol {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique
+  descripcion String?
+  usuarios    Usuario[]
+}
+
+model Cuestionario {
+  id          Int                     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  tipo        String                  // Ej: 'Kolb', 'Felder-Silverman', 'Kuder'
+  preguntas   Pregunta[]
+  resultados  ResultadoCuestionario[]
+}
+
+model Pregunta {
+  id              Int                   @id @default(autoincrement())
+  cuestionario_id Int
+  enunciado       String
+  texto_ayuda     String?
+  tipo_pregunta   String                // Ej: 'Ipsativa', 'Múltiple', etc.
+  cuestionario    Cuestionario          @relation(fields: [cuestionario_id], references: [id])
+  opciones        Opcion[]
+  respuestas      RespuestaEstudiante[]
+}
+
+model Opcion {
+  id          Int                   @id @default(autoincrement())
+  pregunta_id Int
+  texto       String
+  pregunta    Pregunta              @relation(fields: [pregunta_id], references: [id])
+  respuestas  RespuestaEstudiante[]
+}
+
+model RespuestaEstudiante {
+  id                Int        @id @default(autoincrement())
+  estudiante_id     Int
+  pregunta_id       Int
+  opcion_id         Int?
+  respuesta_abierta String?    // Solo para respuestas abiertas
+  fecha_respuesta   DateTime   @default(now())
+  estudiante        Estudiante @relation(fields: [estudiante_id], references: [id])
+  pregunta          Pregunta   @relation(fields: [pregunta_id], references: [id])
+  opcion            Opcion?    @relation(fields: [opcion_id], references: [id])
+  usuario_id        Int
+  usuario           Usuario    @relation(fields: [usuario_id], references: [id])
+}
+
+model ResultadoCuestionario {
+  id              Int          @id @default(autoincrement())
+  estudiante_id   Int
+  cuestionario_id Int
+  resultado       Json         // Almacena el resultado como un objeto JSON
+  fecha_resultado DateTime     @default(now())
+  estudiante      Estudiante   @relation(fields: [estudiante_id], references: [id])
+  cuestionario    Cuestionario @relation(fields: [cuestionario_id], references: [id])
+  usuario_id      Int
+  usuario         Usuario      @relation(fields: [usuario_id], references: [id])
+}
+
+model Autenticacion2FA {
+  usuario_id Int
+  codigo_2fa String
+  expiracion DateTime
+  usuario    Usuario  @relation(fields: [usuario_id], references: [id])
+
+  @@id([usuario_id, codigo_2fa])
+}

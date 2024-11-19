@@ -1,0 +1,53 @@
+# ------------------------------
+# Variables de entorno comunes
+# ------------------------------
+
+# Puerto en el que corre el servidor
+PORT=5000
+
+# ------------------------------
+# Configuración de la base de datos
+# ------------------------------
+
+# Base de datos en entorno de desarrollo (local)
+DATABASE_URL="postgresql://postgres:Miranda*2026@localhost:5432/pricacom_teac_bd?schema=public"
+
+# Base de datos en entorno de producción (será configurada en Vercel/Render)
+DATABASE_URL_PROD="postgresql://usuario:contraseña@localhost:5432/teac2024?schema=public"
+
+# Utiliza la base de datos de producción si está en un entorno de producción
+DATABASE_URL="${NODE_ENV}" == "production" ? "${DATABASE_URL_PROD}" : "${DATABASE_URL}"
+
+# ------------------------------
+# Variables de entorno de JWT
+# ------------------------------
+
+# Clave secreta para la autenticación con JWT
+JWT_SECRET="tu_secreto"
+
+# ------------------------------
+# Configuración de correo electrónico
+# ------------------------------
+
+# Credenciales del correo electrónico para el envío de correos (verificación, recuperación de contraseñas)
+EMAIL_USER="tu_email@example.com"
+EMAIL_PASS="tu_contraseña_email"
+
+# ------------------------------
+# Variables de entorno de Clerk
+# ------------------------------
+# Estos valores deben ser proporcionados en Clerk y configurados en los entornos de Vercel/Render.
+CLERK_API_KEY="your-clerk-api-key"
+CLERK_FRONTEND_API="your-clerk-frontend-api"
+
+# ------------------------------
+# Configuración del entorno
+# ------------------------------
+# Utiliza "development" para entornos locales y "production" en despliegues.
+NODE_ENV=development
+
+# ------------------------------
+# Configuración adicional para despliegue en Vercel y Render
+# ------------------------------
+
+# Si necesitas configurar alguna URL adicional para Vercel o Render, usa estas variables.
